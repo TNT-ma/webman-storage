@@ -171,18 +171,19 @@ abstract class AdapterAbstract implements AdapterInterface
      */
     protected function allowedFile(): bool
     {
-        if ((!empty($this->includes) && !empty($this->config['excludes'])) || !empty($this->config['includes'])) {
+          
+        if (!empty($this->config['include'])){ //允许文件类型 
             foreach ($this->files as $file) {
                 $fileName = $file->getUploadName();
-                if (!strpos($fileName, '.') || !in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['includes'])) {
-                    throw new StorageException($file->getUploadName().'，文件扩展名不合法');
+                if (!strpos($fileName, '.') || !in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['include'])) {
+                    throw new StorageException($file->getUploadName().',文件类型不合法');
                 }
             }
-        } elseif (!empty($this->config['excludes']) && empty($this->config['includes'])) {
+        } else if (!empty($this->config['exclude'])) {//不允许文件类型
             foreach ($this->files as $file) {
                 $fileName = $file->getUploadName();
-                if (!strpos($fileName, '.') || in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['excludes'])) {
-                    throw new StorageException($file->getUploadName().'，文件扩展名不合法');
+                if (!strpos($fileName, '.') || in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['exclude'])) {
+                    throw new StorageException($file->getUploadName().',该文件类型禁止上传');
                 }
             }
         }
